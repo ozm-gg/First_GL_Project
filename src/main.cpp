@@ -1,49 +1,74 @@
 
+#include <dinput.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
+int g_width = 1600;
+int g_height = 1200;
+
+void glfwWindowSizeCallback(GLFWwindow* window, int width, int height)
+{
+    g_width = width;
+    g_height = height;
+    glViewport(0,0,g_width,g_height);
+}
+
+void glfwKeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+	if(key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+}
+
 int main(void)
 {
-    GLFWwindow* window;
+	if (!glfwInit())
+	{
+		std::cout << "Cant load GLFW" << std::endl;
+		return -1;
+	}
 
-    /* Initialize the library */
-    if (!glfwInit())
-        return -1;
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
+	GLFWwindow* window = glfwCreateWindow(g_width, g_height, "Engine", NULL, NULL);
+	if (!window)
+	{
+		glfwTerminate();
+		return -1;
+	}
 
-    /* Make the window's context current */
-    glfwMakeContextCurrent(window);
-    
+	glfwSetWindowSizeCallback(window, glfwWindowSizeCallback);
+	glfwSetKeyCallback(window, glfwKeyCallBack);
 
-    if(!gladLoadGL()){
-        std::cout<<"Cant load GLAD"<<std::endl;
-        return -1;
-    }
+	glfwMakeContextCurrent(window);
 
-    std::cout<<"OpenGL"<<GLVersion.minor<<std::endl;
 
-    glClearColor(1,1,0,1);
-    /* Loop until the user closes the window */
-    while (!glfwWindowShouldClose(window))
-    {
-        /* Render here */
-        glClear(GL_COLOR_BUFFER_BIT);
+	if (!gladLoadGL())
+	{
+		std::cout << "Cant load GLAD" << std::endl;
+		return -1;
+	}
 
-        /* Swap front and back buffers */
-        glfwSwapBuffers(window);
 
-        /* Poll for and process events */
-        glfwPollEvents();
-    }
+	std::cout << "Renderer" << glGetString(GL_RENDERER) << std::endl;
+	std::cout << "OpenGL" << glGetString(GL_VERSION) << std::endl;
 
-    glfwTerminate();
-    return 0;
+	glClearColor(1, 1, 0, 1);
+
+	while (!glfwWindowShouldClose(window))
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		glfwSwapBuffers(window);
+
+		/* Poll for and process events */
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
+	return 0;
 }
