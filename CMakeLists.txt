@@ -1,10 +1,15 @@
 cmake_minimum_required(VERSION 3.27 FATAL_ERROR)
    
 set(PJNAME GL_Project)
+set(CMAKE_CXX_STANDART 17)
 
 project(${PJNAME})
 
-add_executable(GL_Project src/main.cpp)
+add_executable(GL_Project 
+src/main.cpp
+src/Renderer/ShaderProgram.cpp
+src/Renderer/ShaderProgram.h
+)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
